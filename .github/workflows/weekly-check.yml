@@ -1,0 +1,30 @@
+name: Weekly Notion Data Check
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Runs at 00:00 every Monday
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  check-notion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm install axios dotenv
+        
+      - name: Run Notion Check Script
+        env:
+          VITE_NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          VITE_NOTION_GCP_DATABASE_ID: ${{ secrets.NOTION_GCP_DATABASE_ID }}
+          VITE_NOTION_AWS_DATABASE_ID: ${{ secrets.NOTION_AWS_DATABASE_ID }}
+          VITE_NOTION_MS_DATABASE_ID: ${{ secrets.NOTION_MS_DATABASE_ID }}
+          VITE_NOTION_OTHER_DATABASE_ID: ${{ secrets.NOTION_OTHER_DATABASE_ID }}
+        run: node scripts/check-talks.js
