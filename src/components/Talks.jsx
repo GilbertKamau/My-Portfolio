@@ -10,68 +10,19 @@ const Talks = () => {
 
   useEffect(() => {
     const fetchTalks = async () => {
-      const notionToken = import.meta.env.VITE_NOTION_TOKEN;
-      const dbIds = [
-        { id: import.meta.env.VITE_NOTION_GCP_DATABASE_ID, category: 'GCP' },
-        { id: import.meta.env.VITE_NOTION_AWS_DATABASE_ID, category: 'AWS' },
-        { id: import.meta.env.VITE_NOTION_MS_DATABASE_ID, category: 'Microsoft' },
-        { id: import.meta.env.VITE_NOTION_OTHER_DATABASE_ID, category: 'Other' }
-      ].filter(db => db.id);
-
-      if (!notionToken || dbIds.length === 0) {
-        setError('Notion API keys missing. Please configure .env');
-        setLoading(false);
-        return;
-      }
-
       try {
-        const fetchDb = async (dbId, category) => {
-          try {
-            const response = await axios.post(`/notion-api/v1/databases/${dbId}/query`, {}, {
-              headers: {
-                'Authorization': `Bearer ${notionToken}`,
-                'Notion-Version': '2022-06-28',
-                'Content-Type': 'application/json'
-              }
-            });
-            
-            return response.data.results.map(page => {
-              // Extract dynamically by parsing the underlying abstract type instead of hardcoding column names.
-              let title = 'Untitled Talk';
-              let link = '#';
-              let date = 'Unknown Date';
-              let description = '';
-              
-              Object.values(page.properties).forEach(p => {
-                if (p.type === 'title') title = p.title?.[0]?.plain_text || title;
-                if (p.type === 'url') link = p.url || link;
-                if (p.type === 'date') date = p.date?.start || date;
-                if (p.type === 'rich_text') description = p.rich_text?.[0]?.plain_text || description;
-              });
+        // Fetch from the local secure proxy function
+        const response = await axios.get('/api/notion');
+        
+        if (response.data.error) {
+          throw new Error(response.data.error);
+        }
 
-              return { id: page.id, title, link, date, description, category };
-            });
-          } catch (e) {
-            console.error(`Failed to fetch ${category} db:`, e);
-            return []; // Fail gracefully for individual databases so others still render
-          }
-        };
-
-        const results = await Promise.all(dbIds.map(db => fetchDb(db.id, db.category)));
-        const combinedTalks = results.flat();
-
-        // Sort dynamically by newest date first
-        combinedTalks.sort((a, b) => {
-          if (a.date === 'Unknown Date') return 1;
-          if (b.date === 'Unknown Date') return -1;
-          return new Date(b.date) - new Date(a.date);
-        });
-
-        setTalks(combinedTalks);
+        setTalks(response.data);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching Notion talks:', err);
-        setError('Failed to fetch talks. Ensure your integration is invited to the databases.');
+        console.error('Error fetching talks:', err);
+        setError(err.message || 'Failed to fetch talks. Check your Notion configuration.');
         setLoading(false);
       }
     };
