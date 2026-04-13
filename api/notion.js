@@ -5,11 +5,14 @@ export default async function handler(req, res) {
   const notionToken = process.env.NOTION_TOKEN || process.env.VITE_NOTION_TOKEN;
   
   const databases = [
-    { id: process.env.NOTION_GCP_DATABASE_ID || process.env.VITE_NOTION_GCP_DATABASE_ID, category: 'GCP' },
-    { id: process.env.NOTION_AWS_DATABASE_ID || process.env.VITE_NOTION_AWS_DATABASE_ID, category: 'AWS' },
-    { id: process.env.NOTION_MS_DATABASE_ID || process.env.VITE_NOTION_MS_DATABASE_ID, category: 'Microsoft' },
-    { id: process.env.NOTION_OTHER_DATABASE_ID || process.env.VITE_NOTION_OTHER_DATABASE_ID, category: 'Other' }
+    { id: process.env.VITE_NOTION_GCP_DATABASE_ID || process.env.VITE_NOTION_DS_GCP || process.env.NOTION_GCP_DATABASE_ID, category: 'GCP' },
+    { id: process.env.VITE_NOTION_AWS_DATABASE_ID || process.env.VITE_NOTION_DS_AWS || process.env.NOTION_AWS_DATABASE_ID, category: 'AWS' },
+    { id: process.env.VITE_NOTION_MS_DATABASE_ID || process.env.VITE_NOTION_DS_MS || process.env.NOTION_MS_DATABASE_ID, category: 'Microsoft' },
+    { id: process.env.VITE_NOTION_OTHER_DATABASE_ID || process.env.VITE_NOTION_DS_OTHER || process.env.NOTION_OTHER_DATABASE_ID, category: 'Other' }
   ].filter(db => db.id);
+
+  console.log(`[API] Found ${databases.length} databases to check.`);
+  databases.forEach(db => console.log(`[API] Category: ${db.category}, ID: ${db.id ? 'Present' : 'Missing'}`));
 
   const notionVersion = process.env.NOTION_VERSION || process.env.VITE_NOTION_VERSION || '2022-06-28';
 
