@@ -8,6 +8,7 @@ on:
 jobs:
   check-notion:
     runs-on: ubuntu-latest
+    environment: github-pages
     steps:
       - uses: actions/checkout@v4
       
@@ -22,9 +23,10 @@ jobs:
         
       - name: Run Notion Check Script
         env:
-          VITE_NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          VITE_NOTION_GCP_DATABASE_ID: ${{ secrets.NOTION_GCP_DATABASE_ID }}
-          VITE_NOTION_AWS_DATABASE_ID: ${{ secrets.NOTION_AWS_DATABASE_ID }}
-          VITE_NOTION_MS_DATABASE_ID: ${{ secrets.NOTION_MS_DATABASE_ID }}
-          VITE_NOTION_OTHER_DATABASE_ID: ${{ secrets.NOTION_OTHER_DATABASE_ID }}
+          VITE_NOTION_TOKEN: ${{ secrets.VITE_NOTION_TOKEN }}
+          VITE_NOTION_GCP_DATABASE_ID: ${{ secrets.VITE_NOTION_GCP_DATABASE_ID }}
+          VITE_NOTION_AWS_DATABASE_ID: ${{ secrets.VITE_NOTION_AWS_DATABASE_ID }}
+          VITE_NOTION_MS_DATABASE_ID: ${{ secrets.VITE_NOTION_MS_DATABASE_ID }}
+          VITE_NOTION_OTHER_DATABASE_ID: ${{ secrets.VITE_NOTION_OTHER_DATABASE_ID }}
+          VITE_NOTION_VERSION: ${{ secrets.VITE_NOTION_VERSION }}
         run: node scripts/check-talks.js
