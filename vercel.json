@@ -11,7 +11,7 @@
     }
   ],
   "functions": {
-    "api/notion.js": {
+    "api/*.js": {
       "runtime": "vercel-node@latest"
     }
   }
