@@ -9,10 +9,12 @@ export default async function handler(req, res) {
     { id: process.env.VITE_NOTION_AWS_DATABASE_ID || process.env.VITE_NOTION_DS_AWS || process.env.NOTION_AWS_DATABASE_ID, category: 'AWS' },
     { id: process.env.VITE_NOTION_MS_DATABASE_ID || process.env.VITE_NOTION_DS_MS || process.env.NOTION_MS_DATABASE_ID, category: 'Microsoft' },
     { id: process.env.VITE_NOTION_OTHER_DATABASE_ID || process.env.VITE_NOTION_DS_OTHER || process.env.NOTION_OTHER_DATABASE_ID, category: 'Other' }
-  ].filter(db => db.id);
+  ].filter(db => db.id && db.id.trim() !== '');
 
-  console.log(`[API] Found ${databases.length} databases to check.`);
-  databases.forEach(db => console.log(`[API] Category: ${db.category}, ID: ${db.id ? 'Present' : 'Missing'}`));
+  console.log(`[API] Environment check:`);
+  console.log(`- NOTION_TOKEN: ${notionToken ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`- Databases found: ${databases.length}`);
+  databases.forEach(db => console.log(`  - ${db.category}: ${db.id.substring(0, 4)}... (Length: ${db.id.length})`));
 
   const notionVersion = process.env.NOTION_VERSION || process.env.VITE_NOTION_VERSION || '2022-06-28';
 
