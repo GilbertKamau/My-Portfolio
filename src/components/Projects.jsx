@@ -21,15 +21,13 @@ const Projects = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('https://api.github.com/users/GilbertKamau/repos?sort=updated&per_page=10');
-        const filteredProjects = response.data
-          .filter(project => {
-            const isSkill = project.name.toLowerCase().includes('skills') || 
-                           (project.description && project.description.toLowerCase().includes('skills'));
-            return !isSkill;
-          })
-          .slice(0, 6); // Keep the top 6 after filtering
-        setProjects(filteredProjects);
+        const response = await axios.get('/api/projects');
+        
+        if (response.data.error) {
+          throw new Error(response.data.error);
+        }
+
+        setProjects(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching projects:', error);
