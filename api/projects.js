@@ -21,12 +21,17 @@ export default async function handler(req, res) {
 
     const response = await axios.get(`https://api.github.com/users/${username}/repos?sort=updated&per_page=10`, config);
     
-    // Filter out repos related to "skills" and take the top 6
+    // Filter out unwanted repos: portfolio itself and skill checks
     const filteredProjects = response.data
       .filter(project => {
-        const isSkill = project.name.toLowerCase().includes('skills') || 
-                       (project.description && project.description.toLowerCase().includes('skills'));
-        return !isSkill;
+        const name = project.name.toLowerCase();
+        const desc = (project.description || '').toLowerCase();
+        
+        const isPortfolio = name === 'my-portfolio' || name === 'gilbertkamau.github.io';
+        const isSkillCheck = name.includes('skills') || name.includes('check') || 
+                            desc.includes('skills') || desc.includes('check');
+                            
+        return !isPortfolio && !isSkillCheck;
       })
       .slice(0, 6);
 
