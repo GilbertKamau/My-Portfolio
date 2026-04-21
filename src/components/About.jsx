@@ -36,8 +36,8 @@ const About = () => {
           <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '1.1rem' }}>
             I am a web developer with 2 years of experience. I like turning ideas into reality through clean code. I focus on making websites both appealing and functional for users.
           </p>
-          <a href="https://drive.google.com/file/d/1nJ4gbGLS7Ld0S3f0ItG-rrYHqV9F4tKv/view?usp=sharing" target="_blank" rel="noreferrer" className="btn-primary">
-            Download CV
+          <a href="/api/cv" target="_blank" rel="noreferrer" className="btn-primary">
+            Download CV / Resume
           </a>
         </motion.div>
       </div>
